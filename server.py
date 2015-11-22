@@ -10,8 +10,8 @@ print 'Connected by', addr
 while 1:
 #   data = conn.recv(1024)
 #   if not data: break
-    print("Symbolic name meaning all available interfaces")
-    print("\n")
+#    print("Symbolic name meaning all available interfaces")
+#    print("\n")
     conn.send("Symbolic name meaning all available interfaces")
-    conn.send("\n")
+#    conn.send("\n")
 conn.close()
