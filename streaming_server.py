@@ -43,4 +43,4 @@ if __name__ == '__main__':
     auth_details.set_access_token(credentials[2],credentials[3])
     
     tweetstream = Stream(auth_details, tweetlistener)
-    tweetstream.filter(track=['#Pussy'])
+    tweetstream.sample()
