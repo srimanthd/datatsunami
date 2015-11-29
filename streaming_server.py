@@ -11,7 +11,7 @@ from tweepy import Stream
 import socket
 
 HOST = ''
-PORT = 5007
+PORT = 5009
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 
@@ -43,4 +43,4 @@ if __name__ == '__main__':
     auth_details.set_access_token(credentials[2],credentials[3])
     
     tweetstream = Stream(auth_details, tweetlistener)
-    tweetstream.sample()
+    tweetstream.filter(track=['#IndiaWantsRamMandir'])

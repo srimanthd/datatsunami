@@ -11,19 +11,21 @@ from pyspark.streaming import StreamingContext
 def mapper(tweet):
 
      try:
-        print(type(tweet))
         jsontweet = json.loads(tweet)
-        pprint(jsontweet, width=1)
-        return 1
+#        print(jsontweet['entities']['hashtags'][0]['text'])
+        return (jsontweet['text'].split(" "))
 
      except:
-        print("bad tweet, skipping record...")
-        return 0
+#        print("bad tweet, skipping record...")
+        return "bad_tweet"
 
 def analyse(rdd):
-    newrdd = rdd.map(mapper) 
-    value = newrdd.collect()
-    print(value)
+    count = rdd.flatMap(mapper).map(lambda word: (word, 1)).reduceByKey(lambda a,b: a+b)
+    try:
+        lst = count.collect()
+        print(lst)
+    except:
+        print("Please be patient")
 
 if __name__ == "__main__":
 
