@@ -11,9 +11,19 @@ import json
 import time
 from pprint import pprint
 import traceback
+from collections import Counter
+from operator import itemgetter
+import pymongo
+from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
+
+finaldict = {}
+client = MongoClient('localhost', 27017)
+db = client.test
+collection = db.TrendingTweets
 
 def mapper(tweet):
 
@@ -23,28 +33,44 @@ def mapper(tweet):
         hashtags =  jsontweet['entities']['hashtags']
 #        return (jsontweet['text'].split(" "))
         if(len(hashtags)!=0):
-            print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             for text in hashtags:
-                hashtagslist.append(text['text'])
-            print("-----------------------------------------------------------------")
+                hashtagslist.append(str(text['text']))
             return hashtagslist
         else:
             return ["bad tweet"]
 
      except:
-         traceback.print_exc()
+#         traceback.print_exc()
          print("Please look here "+tweet+" Did u see that?")
 #        print("bad tweet, skipping record...")
          return ["bad tweet"]
 
 def analyse(rdd):
-    count = rdd.flatMap(mapper).map(lambda word: (word, 1)).reduceByKey(lambda a,b: a+b)
+    count = rdd.flatMap(mapper).map(lambda word: (str(word), 1)).reduceByKey(lambda a,b: a+b)
     try:
+        global finaldict
+        try:
+            finaldict.pop('_id')
+            print("Popped")
+            open("pop","a").write("popped \n")
+        except:
+            print("cannot pop _id")
         lst = count.collect()
-        slst = sorted(lst,key=lambda x: x[1])
-        writer = open("tweets.txt","w")
-        writer.write(str(slst))
+        currentdict = Counter(dict(lst))
+        tempfinaldict = Counter(finaldict) 
+        finaldict = dict(tempfinaldict+currentdict)
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        sortedlist = sorted( finaldict.items(), key=itemgetter(1) , reverse=True)
+        print(sortedlist)
+        collection.update_one( {'_id':ObjectId("5662f4b351c6b8d3fab930c5")}, { "$set": finaldict } )
+        print("-----------------------------------------------------------------")
+        
+        writer = open("tweets.txt","a")
+        writer.write(str(sortedlist))
+        writer.write('\n')
+        writer.close()
     except:
+        traceback.print_exc()
         print("Please be patient")
 
 if __name__ == "__main__":
@@ -53,7 +79,7 @@ if __name__ == "__main__":
         print("Usage: network_wordcount.py <hostname> <port>", file=sys.stderr)
         exit(-1)
     sc = SparkContext(appName="PythonStreamingNetworkWordCount")
-    ssc = StreamingContext(sc, 120)
+    ssc = StreamingContext(sc, 10)
 
     lines = ssc.socketTextStream(sys.argv[1], int(sys.argv[2]))
     

@@ -10,7 +10,7 @@ from tweepy import Stream
 import socket
 
 HOST = ''
-PORT = 5007
+PORT = 5005
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 
@@ -39,9 +39,9 @@ if __name__ == '__main__':
 
     credentials = loadcredentials()
     tweetlistener = TsunamiListener()
-    auth_details = OAuthHandler(credentials[0],credentials[1])
-    auth_details.set_access_token(credentials[2],credentials[3])
+    auth_details = OAuthHandler("g0hcFNpNOKqqZRNc6GgNND2Ee","505rDlDwOemdA59yhGvZXFW7ghYDGIjJT02OVCeyK0bDWSB3Fn")
+    auth_details.set_access_token("2878544790-6pzBktLkURbaYyTt9y7j9kqwomf7MqkourSUrVN","hG2nrG90BicwhU5NgJk9M6V5pB7cIED7mZKJbHYGEowOF")
     
     tweetstream = Stream(auth_details, tweetlistener)
-#    tweetstream.filter(track=['#CyberMonday'])
+#    tweetstream.filter(track=['#TheFaceThailandseason2'])
     tweetstream.sample()
