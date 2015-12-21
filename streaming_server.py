@@ -37,7 +37,7 @@ def loadcredentials():
 
 if __name__ == '__main__':    
 
-    credentials = loadcredentials()
+#    credentials = loadcredentials()
     tweetlistener = TsunamiListener()
     auth_details = OAuthHandler("g0hcFNpNOKqqZRNc6GgNND2Ee","505rDlDwOemdA59yhGvZXFW7ghYDGIjJT02OVCeyK0bDWSB3Fn")
     auth_details.set_access_token("2878544790-6pzBktLkURbaYyTt9y7j9kqwomf7MqkourSUrVN","hG2nrG90BicwhU5NgJk9M6V5pB7cIED7mZKJbHYGEowOF")
