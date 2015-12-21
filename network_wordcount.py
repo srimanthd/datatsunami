@@ -23,7 +23,7 @@ from pyspark.streaming import StreamingContext
 finaldict = {}
 client = MongoClient('localhost', 27017)
 db = client.test
-collection = db.TrendingTweets
+collection = db.GenericCollection
 
 def mapper(tweet):
 
@@ -62,7 +62,7 @@ def analyse(rdd):
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         sortedlist = sorted( finaldict.items(), key=itemgetter(1) , reverse=True)
         print(sortedlist)
-        collection.update_one( {'_id':ObjectId("5662f4b351c6b8d3fab930c5")}, { "$set": finaldict } )
+        collection.update_one( {'_id':ObjectId("56781ac704ee3ac8bfe0ff13")}, { "$set": finaldict } )
         print("-----------------------------------------------------------------")
         
         writer = open("tweets.txt","a")
