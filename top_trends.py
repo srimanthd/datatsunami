@@ -63,33 +63,36 @@ def analyse(rdd):
         document["hashtags"] = entries
 
         cursor = collection.find( { "timestamp" : timestamp } )
-        isThere = cursor.isAlive
+        isThere = cursor.count()
  
-        if isThere:
-            for eachhashtag in entries
+        if (isThere!=0):
+            for eachhashtag in entries:
                 cursor_hashtag = collection.find( { "hashtags.name" : eachhashtag['name'] } )
-                isExists = curstor_hashtag.isAlive
-                if isExists:
+                isExists = cursor_hashtag.count()
+                if (isExists!=0):
                     index = 0 
-                    array_hashtags = curstor_hashtag.next()['hashtags']
+                    array_hashtags = cursor_hashtag.next()['hashtags']
                     for hashtagdict in array_hashtags:
-                        if hashtagdict['name'] = eachhashtag['name']:
+                        if (hashtagdict['name'] == eachhashtag['name']):
                             indexOfHashtag = index  
 
                     index = index + 1
 
-                    fieldname = "hashtags."+indexOfHashtag+".name"
+                    fieldname = "hashtags."+str(indexOfHashtag)+".count"
                     inc_dict = {}
                     inc_dict[fieldname] = eachhashtag['count']
-                    collection.update( { "timestamp" : timestamp }, { $inc : inc_dict } )
+                    collection.update( { "timestamp" : timestamp }, { "$inc" : inc_dict } )
                 else:
-                    collection.update( { "timestamp" : timestamp }, { $push : { "hashtags": eachhashtag } }  ) 
+                    collection.update( { "timestamp" : timestamp }, { "$push" : { "hashtags": eachhashtag } }  ) 
         else:
             collection.insert_one(document)
 
-    except:
+    except Exception as ex:
         traceback.print_exc()
-        print("Something is wrong..")
+        writer = open('errors.log','a')
+        writer.write(str(ex)+"\n")
+        writer.close()
+        sys.exit()
 
 
 if __name__ == "__main__":
