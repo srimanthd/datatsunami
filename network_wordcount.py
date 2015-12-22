@@ -23,7 +23,7 @@ from pyspark.streaming import StreamingContext
 finaldict = {}
 client = MongoClient('localhost', 27017)
 db = client.test
-collection = db.GenericCollection
+collection = db.Trends
 
 def mapper(tweet):
 
