@@ -1,0 +1,107 @@
+####################################
+# File name: network_wordcount.py  #
+# Author: Srimanth Duggineni       #
+# Submission: 12/1/2015            #
+####################################
+
+from __future__ import print_function
+
+import sys
+import json
+import time
+import traceback
+import pymongo
+
+from collections import Counter
+from operator import itemgetter
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+from pprint import pprint
+from pyspark import SparkContext
+from pyspark.streaming import StreamingContext
+
+
+client = MongoClient('localhost', 27017)
+db = client.test
+collection = db.TwitterTrends
+timestamp = time.time()
+
+
+def mapper(tweet):
+
+     hashtagslist = []
+     try:
+        jsontweet = json.loads(tweet)
+        hashtags =  jsontweet['entities']['hashtags']
+
+        if(len(hashtags)!=0):
+
+            for text in hashtags:
+                hashtagslist.append(str(text['text']))
+            return hashtagslist
+
+        else:
+            return ["bad tweet"]
+
+     except:
+         return ["bad tweet"]
+
+
+def analyse(rdd):
+    count = rdd.flatMap(mapper).map(lambda word: (str(word), 1)).reduceByKey(lambda a,b: a+b)
+    isAlive = False
+
+    try:
+        listoftuples = count.collect()
+        document = { "timestamp": timestamp, "hashtags" : [] }
+        entries = []
+
+        for onetuple in listoftuples:
+            dict = { "name" : onetuple[0], "count" : onetuple[1] }
+            entries.append(dict)
+
+        document["hashtags"] = entries
+
+        cursor = collection.find( { "timestamp" : timestamp } )
+        isThere = cursor.isAlive
+ 
+        if isThere:
+            for eachhashtag in entries
+                cursor_hashtag = collection.find( { "hashtags.name" : eachhashtag['name'] } )
+                isExists = curstor_hashtag.isAlive
+                if isExists:
+                    index = 0 
+                    array_hashtags = curstor_hashtag.next()['hashtags']
+                    for hashtagdict in array_hashtags:
+                        if hashtagdict['name'] = eachhashtag['name']:
+                            indexOfHashtag = index  
+
+                    index = index + 1
+
+                    fieldname = "hashtags."+indexOfHashtag+".name"
+                    inc_dict = {}
+                    inc_dict[fieldname] = eachhashtag['count']
+                    collection.update( { "timestamp" : timestamp }, { $inc : inc_dict } )
+                else:
+                    collection.update( { "timestamp" : timestamp }, { $push : { "hashtags": eachhashtag } }  ) 
+        else:
+            collection.insert_one(document)
+
+    except:
+        traceback.print_exc()
+        print("Something is wrong..")
+
+
+if __name__ == "__main__":
+
+    if len(sys.argv) != 3:
+        print("Usage: network_wordcount.py <hostname> <port>", file=sys.stderr)
+        exit(-1)
+    sc = SparkContext(appName="PythonStreamingNetworkWordCount")
+    ssc = StreamingContext(sc, 10)
+
+    lines = ssc.socketTextStream(sys.argv[1], int(sys.argv[2]))
+    
+    lines.foreachRDD(analyse)
+    ssc.start()
+    ssc.awaitTermination()
