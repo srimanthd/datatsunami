@@ -4,6 +4,35 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+
+  .tests path,
+  .tests line{
+    fill: none;
+    stroke: black;
+  }
+
+  .domain{
+    fill: none;
+    stroke: black;
+    stroke-width: 2px;
+  }
+
+  .pathx{
+    fill: none;
+    stroke: red;
+    stroke-width: 2px;
+  }
+
+  .tick text{
+    font-size: 12px;
+  }
+
+  .tick line{
+    opacity: 0.5;
+    stroke: black;
+    stroke-width: 2px;
+  }
+
 html {
   font-family: sans-serif;
   -webkit-text-size-adjust: 100%;
