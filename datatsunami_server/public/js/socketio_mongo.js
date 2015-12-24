@@ -28,7 +28,6 @@ socketio.on('connection', function(socket){
 
 						if (collectionObject!=null){
 							collectionObject.findOne(function(err,item) {
-							console.log("Look");
 							socket.emit('takethis',item);
 						});
 						}

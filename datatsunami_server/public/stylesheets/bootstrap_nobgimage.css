@@ -23,6 +23,11 @@
     stroke-width: 2px;
   }
 
+  .hashtag{
+    fill: none;
+    stroke-width: 2px;
+  }
+
   .tick text{
     font-size: 12px;
   }
