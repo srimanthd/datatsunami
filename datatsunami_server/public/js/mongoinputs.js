@@ -1,6 +1,5 @@
-
-testdata = { "hashtags": [ {"name":"India", "count":"99"}, 
-							{"name":"China", "count":"189"}] }
+currenttime = new Date().getTime()/1000;
+timeafter = currenttime + 50;
 
 var socket = io('http://192.168.59.128:4000');
 
@@ -32,47 +31,29 @@ axisGroup.append("g").attr("transform","translate(0,500)").call(xAxis);
 
 axisGroup.append("g").call(yAxis);
 
-// data = [ 0, 1 ]
-
-var line = d3.svg.line()
-    .x(function(d) { return d*10; })
-    .y(function(d) { return 500-d*10; });
+time = 1;
 
 var trends = d3.svg.line()
     .y(function(d) { 
-			if(d!=0){ return 300;}
+			if(d!=0){ 
+				diggle = 10*(timeafter-new Date().getTime()/1000);
+				console.log(diggle);
+				return diggle;
+			}
 			else{ return 500-d; }})
     .x(function(d) { 
 			if(d!=0){ 
-				if(d.count>5){
-					 axisGroup.append("text")
-					.attr("transform", "translate(" + (d.count) + "," + 300 + ")")
-					.attr("text-anchor", "start")
-					.style("fill", "red")
-					.text(d.name);
+				// if(d.count>5){
+					 // axisGroup.append("text")
+					// .attr("transform", "translate(" + (d.count) + "," + 300 + ")")
+					// .attr("text-anchor", "start")
+					// .style("fill", "red")
+					// .text(d.name);
 
-				}
+				// }
 				if(d.count<=1300) {return d.count;} else { console.log(d.count); return 1200;}
 			}
 			else{ return d; }});
-
-// axisGroup
-		// .append("path")
-		// .attr("class","pathx")
-		// .attr("d", line(data));
-
-// yc = 1;
-
-// setInterval(function(){ 
-
-	// data[1] = yc++;
-
-	// d3.selectAll(".pathx")
-		// .transition()
-		// .duration(1000)
-		// .attr("d",line(data));
-
-// }, 1000);
 
 showUpdates = function(mdata){
 
@@ -88,11 +69,11 @@ showUpdates = function(mdata){
 			return colorScaler(d.count);
 		});
 	
-	// axisGroup.selectAll(".hashtag")
-		// .data(mdata.hashtags)
-		// .attr("d",function(d) {
-			// return trends([0,d]);
-		// });
+	axisGroup.selectAll(".hashtag")
+		.data(mdata.hashtags)
+		.attr("d",function(d) {
+			return trends([0,d]);
+		});
 
 }
 
