@@ -26,6 +26,9 @@ db = client.test
 collection = db.TwitterTrends
 timestamp = time.time()
 
+ts = open("time.stamp","w")
+ts.write(repr(timestamp))
+ts.close()
 
 def mapper(tweet):
 
@@ -92,7 +95,7 @@ def analyse(rdd):
         writer = open('errors.log','a')
         writer.write(str(ex)+"\n")
         writer.close()
-        sys.exit()
+        pass
 
 
 if __name__ == "__main__":

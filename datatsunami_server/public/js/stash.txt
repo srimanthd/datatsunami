@@ -1,0 +1,11 @@
+								// if(d.count>max){
+									// if(d.name=='bad tweet'){
+										// console.log("Hi");
+									// axisGroup.select(".twt")
+										// .attr("transform", "translate(" + tweetScaler(d.count) + "," + tweetScaler(yc) + ")")
+										// .attr("text-anchor", "start")
+										// .style("fill", "red")
+									// .text(d.name);}
+									// console.log(d.name);
+									// return 1000;
+								// }

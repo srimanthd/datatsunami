@@ -1,6 +1,7 @@
 
 var server = require('http').createServer();
 var socketio = require('socket.io')(server);
+var fs = require('fs');
 
 server.listen(4000);
 
@@ -9,7 +10,10 @@ var url = 'mongodb://localhost:27017/test';
 var MongoClient = mongodb.MongoClient;
 var sleep = require('sleep')
 
+var param = fs.readFileSync('time.stamp').toString();
+ts = { "timestamp": parseFloat(param.split("\n")[0]) }
 collectionObject = null;
+cursor = null;
 
 MongoClient.connect(url, function (err, db) {
 
@@ -27,9 +31,14 @@ socketio.on('connection', function(socket){
 	var getUpdates = function() {
 
 						if (collectionObject!=null){
-							collectionObject.findOne(function(err,item) {
-							socket.emit('takethis',item);
-						});
+							console.log(ts);
+							cursor = collectionObject.find(ts)
+							cursor.each(function(err, doc) {
+								if(doc!=null){
+									console.log(doc);
+									socket.emit('takethis',doc);
+								}
+							});
 						}
 						else{
 							console.log("Patience nigga!!");
