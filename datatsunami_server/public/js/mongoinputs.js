@@ -20,7 +20,7 @@ axisGroup = svgArea.append("g")
 //defining scales
 colorScaler = d3.scale.category10();
 
-max = 10;
+max = 1;
 
 xScale = d3.scale.linear()
 					.domain([0,max])
@@ -89,6 +89,7 @@ var trends = d3.svg.line()
 										.attr("text-anchor", "start")
 										.style("fill", "red")
 									.text(d.name);
+									console.log(d);
 								}
 								if(d.name=='bad tweet'){
 									return 0;
