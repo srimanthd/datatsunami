@@ -20,7 +20,7 @@ from pprint import pprint
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 
-
+scsort = SparkContext(appName="Sorting")
 client = MongoClient('localhost', 27017)
 db = client.test
 collection = db.TwitterTrends
@@ -57,6 +57,7 @@ def analyse(rdd):
     try:
         listoftuples = count.collect()
         document = { "timestamp": timestamp, "hashtags" : [] }
+		document_sort = { "timestamp_sort": timestamp, "hashtags" : [] }
         entries = []
 
         for onetuple in listoftuples:
@@ -65,8 +66,11 @@ def analyse(rdd):
 
         document["hashtags"] = entries
 
-        cursor = collection.find( { "timestamp" : timestamp } )
+        cursor = collection.find( {  "timestamp" : timestamp } )
+		cursor_sort = collection.find( {  "timestamp" : timestamp } )
+		cursor_sort_check = collection.find( {  "timestamp_sort" : timestamp } )
         isThere = cursor.count()
+		isCheck = cursor_sort_check.count()
  
         if (isThere!=0):
             for eachhashtag in entries:
@@ -77,7 +81,7 @@ def analyse(rdd):
                     array_hashtags = cursor_hashtag.next()['hashtags']
                     for hashtagdict in array_hashtags:
                         if (hashtagdict['name'] == eachhashtag['name']):
-                            indexOfHashtag = index  
+                            indexOfHashtag = index
 
                     index = index + 1
 
@@ -89,6 +93,17 @@ def analyse(rdd):
                     collection.update( { "timestamp" : timestamp }, { "$push" : { "hashtags": eachhashtag } }  ) 
         else:
             collection.insert_one(document)
+		
+        unsortedlistdicts = cursor_sort.next()['hashtags']
+        unsortedrdd = scsort.parallelize(unsortedlistdicts)
+        sortedrdd = unsortedrdd.sortBy(lambda a: a['count'])
+        sortedlistdicts = sortedrdd.collect()
+		document_sort["hashtags"] = sortedlistdicts
+		
+		if(isCheck!=0):
+            collection.update( { "timestamp_sort": timestamp }, { "$set" : { "hashtags": sortedlistdicts } } )
+        else:
+            collection.insert_one(document_sort)
 
     except Exception as ex:
         traceback.print_exc()

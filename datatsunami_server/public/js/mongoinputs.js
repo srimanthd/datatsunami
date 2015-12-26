@@ -126,6 +126,11 @@ showUpdates = function(mdata){
 
 }
 
+//Sorting the data
+sortData = function(){
+	
+}
+
 //Registering a listener
 socket.on('takethis', function(mdata) {
 	showUpdates(mdata);
