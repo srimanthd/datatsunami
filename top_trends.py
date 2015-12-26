@@ -20,7 +20,7 @@ from pprint import pprint
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 
-scsort = SparkContext(appName="Sorting")
+# scsort = SparkContext(appName="Sorting")
 client = MongoClient('localhost', 27017)
 db = client.test
 collection = db.TwitterTrends
@@ -57,7 +57,7 @@ def analyse(rdd):
     try:
         listoftuples = count.collect()
         document = { "timestamp": timestamp, "hashtags" : [] }
-		document_sort = { "timestamp_sort": timestamp, "hashtags" : [] }
+        document_sort = { "timestamp_sort": timestamp, "hashtags" : [] }
         entries = []
 
         for onetuple in listoftuples:
@@ -67,11 +67,11 @@ def analyse(rdd):
         document["hashtags"] = entries
 
         cursor = collection.find( {  "timestamp" : timestamp } )
-		cursor_sort = collection.find( {  "timestamp" : timestamp } )
-		cursor_sort_check = collection.find( {  "timestamp_sort" : timestamp } )
+        cursor_sort = collection.find( {  "timestamp" : timestamp } )
+        cursor_sort_check = collection.find( {  "timestamp_sort" : timestamp } )
         isThere = cursor.count()
-		isCheck = cursor_sort_check.count()
- 
+        isCheck = cursor_sort_check.count()
+
         if (isThere!=0):
             for eachhashtag in entries:
                 cursor_hashtag = collection.find( { "hashtags.name" : eachhashtag['name'] } )
@@ -95,12 +95,12 @@ def analyse(rdd):
             collection.insert_one(document)
 		
         unsortedlistdicts = cursor_sort.next()['hashtags']
-        unsortedrdd = scsort.parallelize(unsortedlistdicts)
+        unsortedrdd = sc.parallelize(unsortedlistdicts)
         sortedrdd = unsortedrdd.sortBy(lambda a: a['count'])
         sortedlistdicts = sortedrdd.collect()
-		document_sort["hashtags"] = sortedlistdicts
+        document_sort["hashtags"] = sortedlistdicts
 		
-		if(isCheck!=0):
+        if(isCheck!=0):
             collection.update( { "timestamp_sort": timestamp }, { "$set" : { "hashtags": sortedlistdicts } } )
         else:
             collection.insert_one(document_sort)
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         print("Usage: network_wordcount.py <hostname> <port>", file=sys.stderr)
         exit(-1)
     sc = SparkContext(appName="PythonStreamingNetworkWordCount")
-    ssc = StreamingContext(sc, 10)
+    ssc = StreamingContext(sc, 3)
 
     lines = ssc.socketTextStream(sys.argv[1], int(sys.argv[2]))
     
