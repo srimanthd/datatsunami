@@ -8,7 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap_nobgimage.css"/>
 </head>
 
-<body id="welcome" ng-app>
+<body id="welcome" ng-app="myApps" ng-controller="customers" >
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -52,7 +52,99 @@
   </div><!-- /.container-fluid -->
 </nav>
 <div class="container-fluid">
-
+	<h3>Start/Stop services</h3>
+	<div class="container-fluid">
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th>service</th>
+					<th>state</th>
+					<th colspan="1">action</th>
+					<th>pid</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Twitter Streaming API</td>
+					<td>{{status_1}}</td>
+					<td><button ng-click="start_1()" type="button" class="btn btn-info">Start</button>
+					<button ng-click="stop_1()" type="button" class="btn btn-info">Stop</button></td>
+					<td>{{pid_1}}</td>
+				</tr>
+				<tr>
+					<td>Spark Streaming App</td>
+					<td>{{status_2}}</td>
+					<td><button ng-click="start_2()" type="button" class="btn btn-info">Start</button>
+					<button ng-click="stop_2()" type="button" class="btn btn-info">Stop</button></td>
+					<td>{{pid_2}}</td>
+				</tr>
+				<tr>
+					<td>Socket Server</td>
+					<td>{{status_3}}</td>
+					<td><button ng-click="start_3()" type="button" class="btn btn-info">Start</button>
+					<button ng-click="stop_3()" type="button" class="btn btn-info">Stop</button></td>
+					<td>{{pid_3}}</td>
+				</tr>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
+
+<script>
+var app = angular.module('myApps', []);
+app.controller('customers', function($scope, $http) {
+	$http.get('/defaults').then(function(response){
+		$scope.status_1 = response.data.status_1;
+		$scope.pid_1 = response.data.pid_1;
+		$scope.status_2 = response.data.status_2;
+		$scope.pid_2 = response.data.pid_2;
+		$scope.status_3 = response.data.status_3;
+		$scope.pid_3 = response.data.pid_3;
+	})
+	$scope.start_1 = function(){
+		$http.get('/start_1').then(function(response){
+			$scope.status_1 = response.data.status_1;
+			$scope.pid_1 = response.data.pid_1;
+		})
+	};
+
+	$scope.start_2 = function(){
+		$http.get('/start_2').then(function(response){
+			$scope.status_2 = response.data.status_2;
+			$scope.pid_2 = response.data.pid_2;
+		})
+	};
+
+	$scope.start_3 = function(){
+		$http.get('/start_3').then(function(response){
+			$scope.status_3 = response.data.status_3;
+			$scope.pid_3 = response.data.pid_3;
+		})
+	};
+
+	$scope.stop_1 = function(){
+		$http.get('/stop_1').then(function(response){
+			$scope.status_1 = response.data.status_1;
+			$scope.pid_1 = response.data.pid_1;
+		})
+	};
+
+	$scope.stop_2 = function(){
+		$http.get('/stop_2').then(function(response){
+			$scope.status_2 = response.data.status_2;
+			$scope.pid_2 = response.data.pid_2;
+		})
+	};
+
+	$scope.stop_3 = function(){
+		$http.get('/stop_3').then(function(response){
+			$scope.status_3 = response.data.status_3;
+			$scope.pid_3 = response.data.pid_3;
+		})
+	};
+
+});
+</script>
 </body>
 </html>
