@@ -10,7 +10,7 @@ from tweepy import Stream
 import socket
 
 HOST = ''
-PORT = 5007
+PORT = 5009
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 

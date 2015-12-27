@@ -85,7 +85,14 @@
 					<button ng-click="stop_3()" type="button" class="btn btn-info">Stop</button></td>
 					<td>{{pid_3}}</td>
 				</tr>
+				<tr>
+					<td>Mongo Express Server</td>
+					<td>{{status_4}}</td>
+					<td><button ng-click="start_4()" type="button" class="btn btn-info">Start</button>
+					<button ng-click="stop_4()" type="button" class="btn btn-info">Stop</button></td>
+					<td>{{pid_4}}</td>
 				</tr>
+				
 			</tbody>
 		</table>
 	</div>
@@ -94,6 +101,7 @@
 <script>
 var app = angular.module('myApps', []);
 app.controller('customers', function($scope, $http) {
+
 	$http.get('/defaults').then(function(response){
 		$scope.status_1 = response.data.status_1;
 		$scope.pid_1 = response.data.pid_1;
@@ -101,7 +109,10 @@ app.controller('customers', function($scope, $http) {
 		$scope.pid_2 = response.data.pid_2;
 		$scope.status_3 = response.data.status_3;
 		$scope.pid_3 = response.data.pid_3;
-	})
+		$scope.status_4 = response.data.status_4;
+		$scope.pid_4 = response.data.pid_4;
+	});
+	
 	$scope.start_1 = function(){
 		$http.get('/start_1').then(function(response){
 			$scope.status_1 = response.data.status_1;
@@ -120,6 +131,13 @@ app.controller('customers', function($scope, $http) {
 		$http.get('/start_3').then(function(response){
 			$scope.status_3 = response.data.status_3;
 			$scope.pid_3 = response.data.pid_3;
+		})
+	};
+	
+	$scope.start_4 = function(){
+		$http.get('/start_4').then(function(response){
+			$scope.status_4 = response.data.status_4;
+			$scope.pid_4 = response.data.pid_4;
 		})
 	};
 
@@ -141,6 +159,13 @@ app.controller('customers', function($scope, $http) {
 		$http.get('/stop_3').then(function(response){
 			$scope.status_3 = response.data.status_3;
 			$scope.pid_3 = response.data.pid_3;
+		})
+	};
+	
+	$scope.stop_4 = function(){
+		$http.get('/stop_4').then(function(response){
+			$scope.status_4 = response.data.status_4;
+			$scope.pid_4 = response.data.pid_4;
 		})
 	};
 
