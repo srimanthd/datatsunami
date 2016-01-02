@@ -25,7 +25,7 @@ MongoClient.connect(url, function (err, db) {
   }
 });
 
-itemObject = {}
+itemObject = {};
 
 socketio.on('connection', function(socket){
 	var getUpdates = function() {
@@ -47,4 +47,4 @@ socketio.on('connection', function(socket){
 
 	setInterval(getUpdates, 3000);
 	
-})
+});

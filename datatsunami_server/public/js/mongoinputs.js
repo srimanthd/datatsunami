@@ -3,7 +3,7 @@ var currenttime = new Date().getTime()/1000;
 var timeperiod = currenttime + 500;
 
 //Connectiong to socket server
-var socket = io('http://192.168.59.128:4000');
+var socket = io('http://192.168.59.129:4000');
 
 //Crating svg area
 svgArea = d3.select("body").append("div")
@@ -41,7 +41,7 @@ tweetScaler = d3.scale.linear()
 //Defining axes
 xAxis = d3.svg.axis()
 				.scale(xScale)
-				.orient("bottm");
+				.orient("bottom");
 
 yAxis = d3.svg.axis()
 				.scale(yScale)
@@ -49,11 +49,9 @@ yAxis = d3.svg.axis()
 
 //Calling the axes
 	agX = axisGroup.append("g")
-				.attr("transform","translate(0,500)")
-				.call(xAxis);
+				.attr("transform","translate(0,500)");
 
-	agY = axisGroup.append("g")
-				.call(yAxis);
+	agY = axisGroup.append("g");
 
 yc = 0;
 axisGroup.append("text").attr("class","twt")
