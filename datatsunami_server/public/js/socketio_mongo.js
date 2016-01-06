@@ -11,6 +11,7 @@ var MongoClient = mongodb.MongoClient;
 var sleep = require('sleep')
 
 var param = fs.readFileSync('time.stamp').toString();
+console.log(param);
 ts = { "timestamp": parseFloat(param.split("\n")[0]) }
 collectionObject = null;
 cursor = null;
@@ -37,6 +38,9 @@ socketio.on('connection', function(socket){
 								if(doc!=null){
 									console.log(doc);
 									socket.emit('takethis',doc);
+								}
+								else{
+									console.log(doc);
 								}
 							});
 						}

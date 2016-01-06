@@ -54,11 +54,27 @@ router.get('/start_1', function(req, res, next) {
 
 });
 
+router.post('/start_1', function(req, res, next) {
+
+  var spawn_1 = cp.spawn;
+  console.log(req.body.query)
+  if(cp_1 == null){
+      cp_1 = spawn_1('python3',['../streaming_server.py',req.body.query]);
+	  pid_1 = cp_1.pid;
+	  status_1 = "Active"
+      res.send({ status_1 : status_1, pid_1: pid_1 });
+  }
+  else{
+      console.log("Already running"); 
+  }
+
+});
+
 router.get('/start_2', function(req, res, next) {
 
   var spawn_2 = cp.exec;
   if(cp_2 == null){
-      cp_2 = spawn_2('spark-submit --master local[2] ../top_trends.py localhost 5009', function(error, stdout, stderr) {});
+      cp_2 = spawn_2('spark-submit --master local[2] ../top_trends.py localhost 5053', function(error, stdout, stderr) {});
 	  pid_2 = cp_2.pid+1;
       status_2 = "Active"
 	  res.send({ status_2 : status_2, pid_2: pid_2 });
@@ -136,6 +152,5 @@ router.get('/stop_4', function(req, res, next) {
   res.send({ status_4 : status_4, pid_4: pid_4 });
 
 });
-
 
 module.exports = router;

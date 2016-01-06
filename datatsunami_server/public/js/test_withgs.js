@@ -3,13 +3,13 @@ var socket = io('http://192.168.59.129:4000');
 
 //Create svg and group
 var svg = d3.select("body").append("svg").attr("width",1300).attr("height",1600);
-var group = svg.append("g").attr("width",1300).attr("height",1600).attr("transform","translate(50,50)");
+var group = svg.append("g").attr("width",1300).attr("height",1600).attr("transform","translate(50,50)").attr("id","trends");
 
 //Create pack and force layout
-var pack = d3.layout.pack().size([900,250])
+var pack = d3.layout.pack().size([1250,550])
 						.children( function(d){ return d.hashtags } )
 						.value( function(d){ return d.count; });
-var force = d3.layout.force().size([1250,650]);
+var force = d3.layout.force().size([1250,550]);
 var nodes = null;
 
 //Define init function
@@ -20,22 +20,32 @@ var color = d3.scale.category20();
 //Defining index variables
 var thistime = 0;
 var lasttime = 0;
-
+var data_x= null;
 //Define showUpades function
 var showUpdates = function(data){
 
-	data.count = 10000;
+	data_x = data;
+	data.count = -1;
 
 	lasttime = thistime;
 	thistime = data.hashtags.length;
 	newitems = thistime - lasttime;
-	console.log(newitems)
 	
 	nodes = pack.nodes(data);
 //	console.log(nodes);
 	circles = group.selectAll("g").data(nodes).enter().append("g");
-	circles.append("title").text( function(d){return d.name+":"+d.count});
-	act_circles = circles.append("circle");
+	titles = circles.append("title").text( function(d){
+			if(d.count==-1){
+				console.log("Hi");
+				return "Total hashtags";
+			}
+			else{
+				return d.name+":"+d.count;
+			}
+		});
+	titles = group.selectAll("title").data(nodes);
+	circles.append("circle").call(force.drag);
+	act_circles = group.selectAll("circle").data(nodes)
 
 	circles = group.selectAll("g").data(nodes);
 
@@ -47,7 +57,7 @@ var showUpdates = function(data){
 
 	force.nodes(nodes);
 	force.charge(0);
-	force.gravity(0.05);
+	force.gravity(0);
 	force.alpha(0);
 	force.theta(0);
 	force.on("tick", tickFunction);
@@ -57,14 +67,23 @@ var showUpdates = function(data){
 
 //Define tickFunction
 var tickFunction = function(){
-	circles.each(collide(0.5))
-	act_circles.attr("r", function(d) { if(d.r==125){ return 1;} return d.r; } );
-	act_circles.attr("fill", function(d){return color(d.count)});
-	circles.attr("transform", function(d) { return "translate("+d.x+","+d.y+")"; } );
+	circles.each(collide(0));
+	titles.text( function(d){
+			if(d.count==-1){
+				return "Total hashtags";
+			}
+			else{
+				return d.name+":"+d.count;
+			}
+	});
+	act_circles.transition().duration(100).attr("r", function(d) { if(d.r==125){ return 0;} return d.r; } );
+	act_circles.attr("fill", function(d){ return color(d.count)});
+	circles.transition().duration(100).attr("transform", function(d) { return "translate("+d.x+","+(d.y+300)+")"; } );
 };
 
 //Registering a listener
 socket.on('takethis', function(mdata) {
+	console.log("Hi");
 	showUpdates(mdata);
 });
 

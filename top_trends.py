@@ -24,11 +24,7 @@ from pyspark.streaming import StreamingContext
 client = MongoClient('localhost', 27017)
 db = client.test
 collection = db.TwitterTrends
-timestamp = time.time()
-
-ts = open("time.stamp","w")
-ts.write(repr(timestamp))
-ts.close()
+timestamp = float(open("time.stamp",'r').read())
 
 def mapper(tweet):
 

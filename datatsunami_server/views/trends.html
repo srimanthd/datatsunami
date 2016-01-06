@@ -10,7 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap_nobgimage.css"/>
 </head>
 
-<body id="welcome" ng-app>
+<body ng-app="trendsApp" ng-controller="trends">
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -53,6 +53,29 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+<div class="container-fluid">
+	<div class="row">
+	  <div class="col-lg-3">
+		<div class="input-group">
+			<input ng-model="hashtag" type="text" class="form-control" placeholder="Stream for...">
+		  	<span class="input-group-btn">
+				<button ng-click="go()" class="btn btn-default" type="button">Go!</button>
+		    </span>
+		</div><!-- /input-group -->
+	  </div><!-- /.col-lg-6 -->
+	</div><!-- /.row -->
+</div>
 <script src="js/test_withgs.js"></script>
+<script>
+var app = angular.module('trendsApp', []);
+app.controller('trends', function($scope, $http) {
+
+	$scope.go = function() {
+			$http.post('/start_1',{"query": $scope.hashtag}).then(function(response){
+		});
+	}
+
+});
+</script>
 </body>
 </html>

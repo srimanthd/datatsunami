@@ -5,10 +5,11 @@
 	<script src="js/jquery.js" ></script>
 	<script src="js/bootstrap.js" ></script>
 	<script src="js/angular.js" ></script>
+	<script src="js/d3.v3.min.js" ></script>
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap_nobgimage.css"/>
 </head>
 
-<body id="welcome" ng-app="myApps" ng-controller="customers" >
+<body id="welcome" ng-app="myApps" ng-controller="cpanel">
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -66,7 +67,7 @@
 			<tbody>
 				<tr>
 					<td>Twitter Streaming API</td>
-					<td>{{status_1}}</td>
+					<td ng-bind="status_1"></td>
 					<td><button ng-click="start_1()" type="button" class="btn btn-info">Start</button>
 					<button ng-click="stop_1()" type="button" class="btn btn-info">Stop</button></td>
 					<td>{{pid_1}}</td>
@@ -100,7 +101,7 @@
 
 <script>
 var app = angular.module('myApps', []);
-app.controller('customers', function($scope, $http) {
+app.controller('cpanel', function($scope, $http) {
 
 	$http.get('/defaults').then(function(response){
 		$scope.status_1 = response.data.status_1;
