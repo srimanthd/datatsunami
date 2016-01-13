@@ -117,3 +117,9 @@ function collide(alpha) {
     });
   };
 }
+
+var start_all = function(){
+
+	
+	
+}
