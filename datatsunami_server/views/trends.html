@@ -55,13 +55,26 @@
 </nav>
 <div class="container-fluid">
 	<div class="row">
-	  <div class="col-lg-3">
+	  <div class="col-lg-6">
 		<div class="input-group">
 			<input ng-model="hashtag" type="text" class="form-control" placeholder="Stream for...">
 		  	<span class="input-group-btn">
-				<button ng-click="go()" class="btn btn-default" type="button">Go!</button>
+				<button ng-click="go()" onclick="socketstart()" class="btn btn-success" type="button">Go!</button>
 		    </span>
 		</div><!-- /input-group -->
+	  </div><!-- /.col-lg-6 -->
+	  <div class="col-lg-6">
+		<div class="input-group">
+		  	<span class="input-group-btn">
+				<button onclick="socketstart()" class="btn btn-primary" type="button">Reload Previous Analysis</button>
+		    </span>
+		</div><!-- /input-group -->
+	  </div><!-- /.col-lg-6 -->
+	</div><!-- /.row -->
+	<div class="row">
+	  <div class="col-lg-6">
+	  </div><!-- /.col-lg-6 -->
+	  <div id="d3tophashtags" class="col-lg-6">
 	  </div><!-- /.col-lg-6 -->
 	</div><!-- /.row -->
 </div>
